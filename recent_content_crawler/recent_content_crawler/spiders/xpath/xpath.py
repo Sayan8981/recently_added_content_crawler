@@ -10,3 +10,5 @@ section_urls='//span[@class="provider"][contains(text(),"%s")]/following-sibling
 checked_content_type_xpath='//li[@class="filter-item filter-active"]/label/span[@class="filter-item-link"]/text()'
 
 checked_content_type_key_xpath='//label[span[contains(text(),"%s")]]/input/@value'
+
+next_page='//div/ul/li/following-sibling::li/a[@class="next-page"]/@href'
