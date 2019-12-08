@@ -45,6 +45,7 @@ class instantwatcherbrowse(Spider):
 
     def parse_amazon_content(self,response):
         #print (response.body)
+        #import pdb;pdb.set_trace()
         content_type=response.xpath(xpath.checked_content_type_xpath).extract()[1:]
         for content in content_type:
             self.content_type_key.append(''.join(response.xpath(xpath.checked_content_type_key_xpath%content).extract()))
@@ -64,16 +65,28 @@ class instantwatcherbrowse(Spider):
                 next_page_url="{}{}{}{}".format(''.join(self.start_urls),self.amazon_url,'/search',''.join(response.xpath(xpath.next_page).extract()))
                 if next_page_url is not None:
                     yield Request(url=next_page_url,meta={"content_type":response.meta["content_type"],
-                                                          "service":response.meta["service"]},callback=self.pagination,dont_filter=True)
+                          "service":response.meta["service"]},callback=self.pagination,dont_filter=True)
             
-
     def content_scraped(self,response):
-        import pdb;pdb.set_trace()
+        #import pdb;pdb.set_trace()
         item=RecentContentCrawlerItem()
         
         sel=Selector(response)
         print ("\n")
         print ([response.url,response.meta["content_type"]])
-        #movies_title=sel.xpath('')
+        require_date=(datetime.now() - timedelta(days=1)).strftime('%b %d, %Y')
+
+        title_array=sel.xpath(xpath.title_xpath%require_date).extract()
+        for title in title_array:
+            item["title"]=title
+            if response.meta["content_type"].lower()=='movies':
+                item["Show_type"]='MO'
+            item["Source"]=self.provider_name
+            item["Service"]=response.meta["service"]
+            item["content_type"]='Recently_Added'
+            item["Added_to_site"]=require_date
+            item["Updated_at_DB"]=datetime.now().strftime('%b %d, %Y')  
+
+            yield item
         
            

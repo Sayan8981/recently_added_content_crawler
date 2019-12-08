@@ -11,4 +11,11 @@ import scrapy
 class RecentContentCrawlerItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+    title=scrapy.Field()
+    Show_type=scrapy.Field()
+    Source=scrapy.Field()
+    Service=scrapy.Field()
+    content_type=scrapy.Field()
+    Added_to_site=scrapy.Field()
+    Updated_at_DB=scrapy.Field()
+    
