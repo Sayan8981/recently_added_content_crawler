@@ -6,7 +6,7 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
-
+from w3lib.http import basic_auth_header
 
 class RecentContentCrawlerSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -78,7 +78,11 @@ class RecentContentCrawlerDownloaderMiddleware(object):
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-        return None
+        request.meta['proxy'] = "http://96.44.146.106:6060"
+        #import pdb;pdb.set_trace()
+        # Use the following lines if your proxy requires authentication
+        request.headers['Proxy-Authorization'] = basic_auth_header("hr@headrun.com", "hdrn^123!")
+        #return None
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.

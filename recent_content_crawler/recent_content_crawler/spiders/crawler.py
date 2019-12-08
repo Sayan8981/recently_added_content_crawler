@@ -16,7 +16,7 @@ class instantwatcherbrowse(Spider):
         self.content_type_key=[]
         self.amazon_url=''
         self.provider_name=''
-
+        
     def parse(self,response):
         #import pdb;pdb.set_trace()
         sel=Selector(response)
@@ -44,7 +44,6 @@ class instantwatcherbrowse(Spider):
                                       ,callback=self.parse_amazon_content,dont_filter=True)
 
     def parse_amazon_content(self,response):
-        #print (response.body)
         #import pdb;pdb.set_trace()
         content_type=response.xpath(xpath.checked_content_type_xpath).extract()[1:]
         for content in content_type:
@@ -64,8 +63,9 @@ class instantwatcherbrowse(Spider):
                 #import pdb;pdb.set_trace()
                 next_page_url="{}{}{}{}".format(''.join(self.start_urls),self.amazon_url,'/search',''.join(response.xpath(xpath.next_page).extract()))
                 if next_page_url is not None:
-                    yield Request(url=next_page_url,meta={"content_type":response.meta["content_type"],
-                          "service":response.meta["service"]},callback=self.pagination,dont_filter=True)
+                    if next_page_url !="{}{}{}".format(''.join(self.start_urls),self.amazon_url,'/search'):
+                        yield Request(url=next_page_url,meta={"content_type":response.meta["content_type"],
+                              "service":response.meta["service"]},callback=self.pagination,dont_filter=True)
             
     def content_scraped(self,response):
         #import pdb;pdb.set_trace()
@@ -86,7 +86,7 @@ class instantwatcherbrowse(Spider):
             item["content_type"]='Recently_Added'
             item["Added_to_site"]=require_date
             item["Updated_at_DB"]=datetime.now().strftime('%b %d, %Y')  
-
+            print (item)
             yield item
         
            
