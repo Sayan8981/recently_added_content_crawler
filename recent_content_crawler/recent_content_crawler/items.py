@@ -5,17 +5,15 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/items.html
 
-import scrapy
+import scrapy,django 
+import scrapy_djangoitem
+from scrapy_djangoitem import DjangoItem, Field
+from crawler_model.models import recent_content
 
 
-class RecentContentCrawlerItem(scrapy.Item):
+class RecentContentCrawlerItem(DjangoItem):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    title=scrapy.Field()
-    Show_type=scrapy.Field()
-    Source=scrapy.Field()
-    Service=scrapy.Field()
-    content_type=scrapy.Field()
-    Added_to_site=scrapy.Field()
-    Updated_at_DB=scrapy.Field()
+    django_model=recent_content
+
     

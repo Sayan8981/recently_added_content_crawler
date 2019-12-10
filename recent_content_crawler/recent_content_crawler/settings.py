@@ -9,6 +9,19 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
+import os
+import sys
+import django
+
+PROJECT_DIR = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    )
+sys.path.append(os.path.join(PROJECT_DIR, 'django_file_recent_content_crawler'))
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'django_file_recent_content_crawler.settings'
+
+django.setup()
+
 BOT_NAME = 'recent_content_crawler'
 
 SPIDER_MODULES = ['recent_content_crawler.spiders']
@@ -19,7 +32,7 @@ NEWSPIDER_MODULE = 'recent_content_crawler.spiders'
 #USER_AGENT = 'recent_content_crawler (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = False
+ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -27,7 +40,7 @@ ROBOTSTXT_OBEY = False
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+#DOWNLOAD_DELAY = 1
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -68,9 +81,9 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'recent_content_crawler.pipelines.RecentContentCrawlerPipeline': 300,
-#}
+ITEM_PIPELINES = {
+    'recent_content_crawler.pipelines.RecentContentCrawlerPipeline': 1000,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
