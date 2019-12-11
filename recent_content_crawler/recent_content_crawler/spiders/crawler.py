@@ -90,12 +90,12 @@ class instantwatcherbrowse(Spider):
         print ("\n")
         print ([response.url,response.meta["content_type"]])
         require_date=(datetime.now() - timedelta(days=1)).strftime('%b %d, %Y')
-        import pdb;pdb.set_trace()  
+        #import pdb;pdb.set_trace()  
         title_array=sel.xpath(xpath.title_xpath%require_date).extract()
         for title in title_array:
             item=RecentContentCrawlerItem()
             item["title"]=str(title)
-            import pdb;pdb.set_trace()
+            #import pdb;pdb.set_trace()
             if response.meta["content_type"].lower()=='movies':
                 item["Show_type"]='MO'
             item["Source"]=self.provider_name
