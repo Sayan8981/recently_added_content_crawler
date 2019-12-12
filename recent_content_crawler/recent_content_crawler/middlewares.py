@@ -7,6 +7,8 @@
 
 from scrapy import signals
 from w3lib.http import basic_auth_header
+from scrapy.downloadermiddleware.retry import RetryMiddleware
+from twisted.internet.error import *
 
 class RecentContentCrawlerSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -38,7 +40,7 @@ class RecentContentCrawlerSpiderMiddleware(object):
     def process_spider_exception(self, response, exception, spider):
         # Called when a spider or process_spider_input() method
         # (from other spider middleware) raises an exception.
-
+        
         # Should return either None or an iterable of Request, dict
         # or Item objects.
         pass
@@ -78,7 +80,7 @@ class RecentContentCrawlerDownloaderMiddleware(object):
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-        request.meta['proxy'] = "https://159.89.245.69:3128"
+        request.meta['proxy'] = "https://199.114.221.40:8080"
         #import pdb;pdb.set_trace()
         # Use the following lines if your proxy requires authentication
         #return None
@@ -100,7 +102,17 @@ class RecentContentCrawlerDownloaderMiddleware(object):
         # - return None: continue processing this exception
         # - return a Response object: stops process_exception() chain
         # - return a Request object: stops process_exception() chain
-        pass
+        if type(exception) == ConnectionRefusedError: 
+            print("Failed to request url %s with exception %s........"%(request.url,str(exception)))
+            return self._retry(request, exception, spider)
+        elif type(exception) == TimeoutError:
+            print("Failed to request url %s with exception %s.........."%(request.url,str(exception)))
+            return self._retry(request, exception, spider)
+        elif type(exception)== HTTPError: 
+            print("Failed to request url %s with exception %s........."%(request.url,str(exception)))
+            return self._retry(request, exception, spider)
+        else:
+            pass    
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)

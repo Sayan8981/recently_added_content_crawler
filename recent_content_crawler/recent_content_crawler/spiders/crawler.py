@@ -103,7 +103,7 @@ class instantwatcherbrowse(Spider):
         sel=Selector(response)
         self.require_date=(datetime.now() - timedelta(days=1)).strftime('%b %d, %Y')
         date_node=sel.xpath('//h4/text()').extract()
-        import pdb;pdb.set_trace()  
+        #import pdb;pdb.set_trace()  
         if len(date_node)>1:
             for date in date_node:
                 if date==self.require_date:
@@ -122,7 +122,7 @@ class instantwatcherbrowse(Spider):
 
 
     def item_stored(self,response): 
-        import pdb;pdb.set_trace()
+        #import pdb;pdb.set_trace()
         for title in response.meta["title_array"]:
             item=RecentContentCrawlerItem()
             item["title"]=str(title)

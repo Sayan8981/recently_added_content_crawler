@@ -5,7 +5,7 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/items.html
 
-import scrapy,django 
+
 import scrapy_djangoitem
 from scrapy_djangoitem import DjangoItem, Field
 from crawler_model.models import recent_content
