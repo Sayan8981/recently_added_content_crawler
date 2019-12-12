@@ -81,7 +81,6 @@ class RecentContentCrawlerDownloaderMiddleware(object):
         request.meta['proxy'] = "https://159.89.245.69:3128"
         #import pdb;pdb.set_trace()
         # Use the following lines if your proxy requires authentication
-        #request.headers['Proxy-Authorization'] = basic_auth_header("hr@headrun.com", "hdrn^123!")
         #return None
 
     def process_response(self, request, response, spider):

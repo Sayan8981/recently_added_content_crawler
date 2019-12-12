@@ -13,4 +13,4 @@ checked_content_type_key_xpath='//label[span[contains(text(),"%s")]]/input/@valu
 
 next_page='//div/ul/li/following-sibling::li/a[@class="next-page"]/@href'
 
-title_xpath='//h4[contains(text(),"%s")]//parent::div/div/span[@class="title"]/a/text()'
+title_xpath='//*[preceding-sibling::h4[contains(text(),"%s")]]/span[@class="title"]/a/text()'

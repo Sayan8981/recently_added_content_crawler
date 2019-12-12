@@ -19,8 +19,8 @@ class recent_content(models.Model):
         ordering=["title"]
 
 
-    @classmethod
-    def truncate(cls):
-        with connection.cursor() as cursor:
-            cursor.execute('TRUNCATE TABLE "{0}" CASCADE'.format(cls._meta.db_table))    
+# @classmethod
+# def truncate(cls):
+#     with connection.cursor() as cursor:
+#         cursor.execute('TRUNCATE TABLE "{0}" CASCADE'.format(cls._meta.db_table))    
        

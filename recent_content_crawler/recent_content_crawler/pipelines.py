@@ -9,7 +9,13 @@ import sys
 import os
 
 class RecentContentCrawlerPipeline(object):
+
+    def __init__(self):
+        self.counter=0
+
     def process_item(self, item, spider):
-        print ("commited...")
+        self.counter+=1
+        print ("commited...","count:",self.counter)
+        print ("\n")
         item.save()
         return item

@@ -13,11 +13,20 @@ class instantwatcherbrowse(Spider):
     name="recently_added"
     start_urls=["https://instantwatcher.com"]
 
+    #initialization:
     def __init__(self):
         self.content_type_key=[]
         self.source_url=''
         self.provider_name=''
-        
+        self.title_array_prev_dates=[]
+        self.require_date=''
+        self.all_title_array=[]
+
+    def cleanup(self):
+        self.all_title_array=[]    
+        self.title_array_prev_dates=[]
+        self.content_type_key=[]
+
     def parse(self,response):
         #import pdb;pdb.set_trace()
         sel=Selector(response)
@@ -71,9 +80,8 @@ class instantwatcherbrowse(Spider):
         #import pdb;pdb.set_trace()
         if self.provider_name=='Amazon':
             if response.meta["content_type"].lower() == 'movies':
-                # yield Request(url=response.url,meta={"content_type":response.meta["content_type"],
-                #                "service":response.meta["service"]},callback=self.call_next_page,dont_filter=True)
-                pass
+                yield Request(url=response.url,meta={"content_type":response.meta["content_type"],
+                               "service":response.meta["service"]},callback=self.call_next_page,dont_filter=True)
             else:
                 yield Request(url=response.url,meta={"content_type":response.meta["content_type"],
                                "service":response.meta["service"]},callback=self.call_next_page,dont_filter=True)
@@ -91,17 +99,33 @@ class instantwatcherbrowse(Spider):
             
     def content_scraped(self,response):
         #import pdb;pdb.set_trace()
-        
+        self.cleanup()
         sel=Selector(response)
-        print ("\n")
-        print ([response.url,response.meta["content_type"]])
-        require_date=(datetime.now() - timedelta(days=1)).strftime('%b %d, %Y')
+        self.require_date=(datetime.now() - timedelta(days=1)).strftime('%b %d, %Y')
+        date_node=sel.xpath('//h4/text()').extract()
         import pdb;pdb.set_trace()  
-        title_array=sel.xpath(xpath.title_xpath%require_date).extract()
-        for title in title_array:
+        if len(date_node)>1:
+            for date in date_node:
+                if date==self.require_date:
+                    self.all_title_array=sel.xpath(xpath.title_xpath%str(date)).extract()
+                else:
+                    self.title_array_prev_dates=sel.xpath(xpath.title_xpath%str(date)).extract()
+            title_array=list(set(self.all_title_array)-set(self.title_array_prev_dates))
+            if title_array:
+                yield Request(url=response.url,meta={"title_array":title_array,"content_type":response.meta["content_type"],
+                          "service":response.meta["service"]},callback=self.item_stored,dont_filter=True)
+        else:
+            title_array=sel.xpath(xpath.title_xpath%self.require_date).extract()
+            if title_array:
+                yield Request(url=response.url,meta={"title_array":title_array,"content_type":response.meta["content_type"],
+                          "service":response.meta["service"]},callback=self.item_stored,dont_filter=True)
+
+
+    def item_stored(self,response): 
+        import pdb;pdb.set_trace()
+        for title in response.meta["title_array"]:
             item=RecentContentCrawlerItem()
             item["title"]=str(title)
-            #import pdb;pdb.set_trace()
             if response.meta["content_type"].lower()=='movies':
                 item["Show_type"]='MO'
             else:
@@ -109,10 +133,11 @@ class instantwatcherbrowse(Spider):
             item["Source"]=self.provider_name
             item["Service"]=response.meta["service"]
             item["content_type"]='Recently_Added'
-            item["Added_to_site"]=require_date
+            item["Added_to_site"]=self.require_date
             item["Updated_at_DB"]=datetime.now().strftime('%b %d, %Y') 
             print ("\n") 
             print ("Crawling ....",item["Updated_at_DB"])
-            yield item
+            yield item             
+                    
         
            
