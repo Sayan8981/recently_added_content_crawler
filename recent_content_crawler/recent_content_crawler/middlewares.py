@@ -78,7 +78,7 @@ class RecentContentCrawlerDownloaderMiddleware(object):
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-        request.meta['proxy'] = "https://159.203.182.241:8080"
+        request.meta['proxy'] = "https://159.89.245.69:3128"
         #import pdb;pdb.set_trace()
         # Use the following lines if your proxy requires authentication
         #request.headers['Proxy-Authorization'] = basic_auth_header("hr@headrun.com", "hdrn^123!")

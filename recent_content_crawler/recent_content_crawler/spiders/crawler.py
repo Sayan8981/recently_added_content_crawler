@@ -15,7 +15,7 @@ class instantwatcherbrowse(Spider):
 
     def __init__(self):
         self.content_type_key=[]
-        self.amazon_url=''
+        self.source_url=''
         self.provider_name=''
         
     def parse(self,response):
@@ -39,8 +39,8 @@ class instantwatcherbrowse(Spider):
         for source in source_node:
             if source.lower()== "amazon":
                 #import pdb;pdb.set_trace()  
-                self.amazon_url=''.join(sel.xpath(xpath.amazon_url_xpath%source).extract())
-                yield Request(url=''.join(self.start_urls)+self.amazon_url,meta={'source_name':source},
+                self.source_url=''.join(sel.xpath(xpath.source_url_xpath%source).extract())
+                yield Request(url=''.join(self.start_urls)+self.source_url,meta={'source_name':source},
                                         headers=headers,callback=self.parse_url,dont_filter = True)
 
         
@@ -64,7 +64,6 @@ class instantwatcherbrowse(Spider):
         dict_content_type_key=dict(zip(content_type,self.content_type_key))
         for key,value in dict_content_type_key.items():
             content_url=response.url.replace('1+2','%s'%value)
-            time.sleep(1)
             yield Request(url=content_url,meta={'content_type':key,"service":response.meta["service"]}
                                                                ,callback=self.pagination,dont_filter=True)
 
@@ -72,16 +71,23 @@ class instantwatcherbrowse(Spider):
         #import pdb;pdb.set_trace()
         if self.provider_name=='Amazon':
             if response.meta["content_type"].lower() == 'movies':
-                time.sleep(2)
+                # yield Request(url=response.url,meta={"content_type":response.meta["content_type"],
+                #                "service":response.meta["service"]},callback=self.call_next_page,dont_filter=True)
+                pass
+            else:
                 yield Request(url=response.url,meta={"content_type":response.meta["content_type"],
-                               "service":response.meta["service"]},callback=self.content_scraped,dont_filter=True)
-                #import pdb;pdb.set_trace()
-                next_page_url="{}{}{}{}".format(''.join(self.start_urls),self.amazon_url,'/search',''.join(response.xpath(xpath.next_page).extract()))
-                if next_page_url is not None:
-                    if next_page_url !="{}{}{}".format(''.join(self.start_urls),self.amazon_url,'/search'):
-                        time.sleep(2)
-                        yield Request(url=next_page_url,meta={"content_type":response.meta["content_type"],
-                              "service":response.meta["service"]},callback=self.pagination,dont_filter=True)
+                               "service":response.meta["service"]},callback=self.call_next_page,dont_filter=True)
+
+
+    def call_next_page(self,response):
+        yield Request(url=response.url,meta={"content_type":response.meta["content_type"],
+                       "service":response.meta["service"]},callback=self.content_scraped,dont_filter=True)
+        #import pdb;pdb.set_trace()
+        next_page_url="{}{}{}{}".format(''.join(self.start_urls),self.source_url,'/search',''.join(response.xpath(xpath.next_page).extract()))
+        if next_page_url is not None:
+            if next_page_url !="{}{}{}".format(''.join(self.start_urls),self.source_url,'/search'):
+                yield Request(url=next_page_url,meta={"content_type":response.meta["content_type"],
+                      "service":response.meta["service"]},callback=self.pagination,dont_filter=True)                              
             
     def content_scraped(self,response):
         #import pdb;pdb.set_trace()
@@ -90,7 +96,7 @@ class instantwatcherbrowse(Spider):
         print ("\n")
         print ([response.url,response.meta["content_type"]])
         require_date=(datetime.now() - timedelta(days=1)).strftime('%b %d, %Y')
-        #import pdb;pdb.set_trace()  
+        import pdb;pdb.set_trace()  
         title_array=sel.xpath(xpath.title_xpath%require_date).extract()
         for title in title_array:
             item=RecentContentCrawlerItem()
@@ -98,6 +104,8 @@ class instantwatcherbrowse(Spider):
             #import pdb;pdb.set_trace()
             if response.meta["content_type"].lower()=='movies':
                 item["Show_type"]='MO'
+            else:
+                item["Show_type"]='TVSeason'    
             item["Source"]=self.provider_name
             item["Service"]=response.meta["service"]
             item["content_type"]='Recently_Added'

@@ -1,7 +1,7 @@
 
 source_node='//span[@class="site-switch"]/a/text()'
 
-amazon_url_xpath='//span/a[contains(text(),"%s")]/@href'
+source_url_xpath='//span/a[contains(text(),"%s")]/@href'
 
 section_xpath='//span[@class="provider"][contains(text(),"%s")]/following-sibling::a/text()'
 
