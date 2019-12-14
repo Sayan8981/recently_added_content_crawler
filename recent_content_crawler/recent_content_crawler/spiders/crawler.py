@@ -3,6 +3,7 @@ from scrapy import *
 import sys
 import os
 import time
+import pinyin,unidecode
 from datetime import datetime,timedelta
 from recent_content_crawler.items import *
 sys.path.insert(0,os.getcwd()+'/xpath')
@@ -60,9 +61,16 @@ class instantwatcherbrowse(Spider):
         section_url=response.xpath(xpath.section_urls%response.meta['source_name']).extract()
         source_section_wise_url=dict(zip(section,section_url))
         if self.provider_name=='Amazon':
-            yield Request(url=''.join(self.start_urls)+source_section_wise_url["New Prime"]
-                                   ,meta={"service":"New Prime"}
-                                      ,callback=self.parse_amazon_content,dont_filter=True)
+            for sections in section:
+                if sections=="New Prime":
+                    yield Request(url=''.join(self.start_urls)+source_section_wise_url[sections]
+                                    ,meta={"service":sections},callback=self.parse_amazon_content,dont_filter=True)
+                elif sections=="New Rental":
+                    yield Request(url=''.join(self.start_urls)+source_section_wise_url[sections]
+                                    ,meta={"service":sections},callback=self.parse_amazon_content,dont_filter=True)
+                elif sections=="Purchase":
+                    yield Request(url=''.join(self.start_urls)+source_section_wise_url[sections]
+                                    ,meta={"service":sections},callback=self.parse_amazon_content,dont_filter=True)    
 
     def parse_amazon_content(self,response):
         #import pdb;pdb.set_trace()
@@ -98,6 +106,7 @@ class instantwatcherbrowse(Spider):
             
     def content_scraped(self,response):
         #import pdb;pdb.set_trace()
+        #self.cleanup()
         self.cleanup()
         sel=Selector(response)
         self.require_date=(datetime.now() - timedelta(days=1)).strftime('%b %d, %Y')
@@ -107,15 +116,20 @@ class instantwatcherbrowse(Spider):
             for date in date_node:
                 if date==self.require_date:
                     self.all_title_array=sel.xpath(xpath.title_xpath%str(date)).extract()
+                    #import pdb;pdb.set_trace() 
+                    print (self.all_title_array)
                 else:
-                    self.title_array_prev_dates=sel.xpath(xpath.title_xpath%str(date)).extract()
+                    self.title_array_prev_dates+=sel.xpath(xpath.title_xpath%str(date)).extract()
+                    print(self.title_array_prev_dates)
             title_array=list(set(self.all_title_array)-set(self.title_array_prev_dates))
+            print (title_array)
             if title_array:
                 yield Request(url=response.url,meta={"title_array":title_array,"content_type":response.meta["content_type"],
                           "service":response.meta["service"]},callback=self.item_stored,dont_filter=True)
         else:
             title_array=sel.xpath(xpath.title_xpath%self.require_date).extract()
             if title_array:
+                print (title_array)
                 yield Request(url=response.url,meta={"title_array":title_array,"content_type":response.meta["content_type"],
                           "service":response.meta["service"]},callback=self.item_stored,dont_filter=True)
 
@@ -124,7 +138,10 @@ class instantwatcherbrowse(Spider):
         #import pdb;pdb.set_trace()
         for title in response.meta["title_array"]:
             item=RecentContentCrawlerItem()
-            item["title"]=str(title)
+            try:
+               item["title"]=str(unidecode.unidecode(pinyin.get(title)))
+            except Exception:
+               item["title"]=str(title)
             if response.meta["content_type"].lower()=='movies':
                 item["Show_type"]='MO'
             else:

@@ -27,7 +27,8 @@ class createdb:
             self.cursor.execute("create database %s;"%db_detail.database_name)           
         else:
             print("%s db is already exist"%db_detail.database_name)
-        self.connection.close()        
+        self.connection.close() 
+        self.cursor.close()       
                            
 
 

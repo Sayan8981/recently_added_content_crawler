@@ -14,21 +14,21 @@ chmod +x create_db.py
 echo  "\n"
 
 python create_db.py
-cd django_file_recent_content_crawler/
-python manage.py makemigrations crawler_model
-python manage.py migrate
-cd ..
-cd recent_content_crawler/recent_content_crawler/spiders/
-pwd
-echo "\n"
-ls
+# cd django_file_recent_content_crawler/
+# python manage.py makemigrations crawler_model
+# python manage.py migrate
+# cd ..
+# cd recent_content_crawler/recent_content_crawler/spiders/
+# pwd
+# echo "\n"
+# ls
 
-#command to run spider 
-echo "\n"
-echo "spider running started..................."
-scrapy crawl recently_added > output_log.txt
+# #command to run spider 
+# echo "\n"
+# echo "spider running started..................."
+# scrapy crawl recently_added > output_log.txt
 
-sleep 30m
+# sleep 15m
 
 echo "\n"
 echo "Preparing to create csv file from database..............."
@@ -49,4 +49,4 @@ cd ../
 echo "Preparing sending email ..................."
 python send_mail.py
 
-echo "Executed................$(dt)"
+echo "Executed................$dt"

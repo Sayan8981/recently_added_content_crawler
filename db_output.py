@@ -13,7 +13,7 @@ class db_output_stats:
         self.db_list=[]
         self.connection=''
         self.cursor=''
-        self.fieldnames=["title","Show_type","Source","Service","content_type","Added_to_site","Updated_at_DB"]
+        self.fieldnames=["title","Show_type","Source","Subscription","content_type","Added_to_site","Updated_at_DB"]
 
     def set_up_db_connection(self):
         #import pdb;pdb.set_trace()
@@ -35,7 +35,7 @@ class db_output_stats:
         output_file=self.create_csv(result_sheet)
         
         with output_file as outputcsvfile:
-            self.writer= csv.writer(outputcsvfile,dialect="excel",lineterminator = '\n')
+            self.writer= csv.writer(outputcsvfile,dialect="csv",lineterminator = '\n')
             self.writer.writerow(self.fieldnames)
             query="select * from crawler_model_recent_content where Added_to_site='%s'"
             self.cursor.execute(query%(datetime.now() - timedelta(days=1)).strftime('%b %d, %Y'))
@@ -43,7 +43,8 @@ class db_output_stats:
             self.writer.writerows(result)
 
         output_file.close()
-        self.connection.close()    
+        self.connection.close() 
+        self.cursor.close()   
 
 
 db_output_stats().main()  
