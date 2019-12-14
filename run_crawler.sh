@@ -28,7 +28,7 @@ echo "\n"
 echo "spider running started..................."
 scrapy crawl recently_added > output_log.txt
 
-sleep 40m
+sleep 30m
 
 echo "\n"
 echo "Preparing to create csv file from database..............."
