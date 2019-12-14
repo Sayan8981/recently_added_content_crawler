@@ -66,7 +66,6 @@ class instantwatcherbrowse(Spider):
 
     def parse_amazon_content(self,response):
         #import pdb;pdb.set_trace()
-        print (response.body)
         content_type=response.xpath(xpath.checked_content_type_xpath).extract()[1:]
         for content in content_type:
             self.content_type_key.append(''.join(response.xpath(xpath.checked_content_type_key_xpath%content).extract()))
@@ -137,6 +136,7 @@ class instantwatcherbrowse(Spider):
             item["Updated_at_DB"]=datetime.now().strftime('%b %d, %Y') 
             print ("\n") 
             print ("Crawling ....",item["Updated_at_DB"])
+            print (item)
             yield item             
                     
         

@@ -5,6 +5,10 @@ echo  "\n"
 echo  "The list of files \n"
 echo  "\n"
 ls
+
+dt=$(date '+%d/%m/%Y %H:%M:%S')
+echo $dt
+
 echo  "\n"
 chmod +x create_db.py
 echo  "\n"
@@ -22,4 +26,27 @@ ls
 #command to run spider 
 echo "\n"
 echo "spider running started..................."
-scrapy crawl recently_added
+scrapy crawl recently_added > output_log.txt
+
+sleep 40m
+
+echo "\n"
+echo "Preparing to create csv file from database..............."
+
+python db_output.py
+
+sleep 10s
+
+cd ../
+
+path="$(pwd)/recently_added_content_crawler/attachments"
+python zip.py
+mv *.zip $path
+
+cd $path
+cd ../
+
+echo "Preparing sending email ..................."
+python send_mail.py
+
+echo "Executed................$(dt)"
