@@ -28,7 +28,7 @@ class send_emails:
     def user_message(self):
         text="""Hi,
 
-    As dicussed with @Malini, I worked on the site https://instantwatcher.com/ to crawl the 
+    As dicussed with , I worked on the site https://instantwatcher.com/ to crawl the 
     recently added content for the Subscription wise.
     I finished the Amazon Site with Subscription [New Prime, New Rental, Purchase].
 
@@ -45,17 +45,9 @@ class send_emails:
     With best regards,
 
 
-    Saayan Das, 
+    Saayan Das, """
 
-    Software Engineer
-
-    HEADRUN, Koramangala, Bangalore
-
-    Ph: 9804568814| Email: saayan@headrun.com
-            
-
-    The contents of this email message and any attachments are intended solely for the addressee(s) and may contain confidential and/or privileged information and may be legally protected from disclosure. """
-
+    
         return text  
 
 
