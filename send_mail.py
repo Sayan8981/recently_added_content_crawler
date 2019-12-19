@@ -19,10 +19,10 @@ class send_emails:
         #self.context_=''
 
     def user_input(self):
-        self.sender_email="saayan@headrun.com"
-        self.receiver_email=["saayan8981@gmail.com"]
-        self.cc=["saayan9045@yahoo.com"]
-        #self.bcc=["saayan9045@yahoo.com"]
+        self.sender_email="************"
+        self.receiver_email=["*******************"]
+        self.cc=["*****************"]
+        #self.bcc=["**********"]
         self.password="*****************"
 
     def user_message(self):
