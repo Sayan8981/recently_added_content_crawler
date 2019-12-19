@@ -1,5 +1,8 @@
  
 #!/bin/bash
+sudo apt-get install python-pip
+sudo pip install scrapy
+sudo pip install django
 pwd
 echo  "\n"
 echo  "The list of files \n"
@@ -14,21 +17,21 @@ chmod +x create_db.py
 echo  "\n"
 
 python create_db.py
-# cd django_file_recent_content_crawler/
-# python manage.py makemigrations crawler_model
-# python manage.py migrate
-# cd ..
-# cd recent_content_crawler/recent_content_crawler/spiders/
-# pwd
-# echo "\n"
-# ls
+cd django_file_recent_content_crawler/
+python manage.py makemigrations crawler_model
+python manage.py migrate
+cd ..
+cd recent_content_crawler/recent_content_crawler/spiders/
+pwd
+echo "\n"
+ls
 
-# #command to run spider 
-# echo "\n"
-# echo "spider running started..................."
-# scrapy crawl recently_added > output_log.txt
+#command to run spider 
+echo "\n"
+echo "spider running started..................."
+scrapy crawl recently_added > output_log.txt
 
-# sleep 15m
+sleep 15m
 
 echo "\n"
 echo "Preparing to create csv file from database..............."
@@ -44,9 +47,5 @@ python zip.py
 mv *.zip $path
 
 cd $path
-cd ../
-
-echo "Preparing sending email ..................."
-python send_mail.py
 
 echo "Executed................$dt"
